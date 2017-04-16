@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  app:
+    image: gilir/rpi-piwik-nginx
+    container_name: piwik-nginx
+    restart: always
+    external_links:
+      - mysql-main
+    volumes:
+      - piwik_config:/config
+    environment:
+      - GID=1000
+      - UID=1000
+    ports:
+      - "6688:6688"
+    networks:
+      - proxy-network
+    labels:
+      - "traefik.frontend.rule=Host:piwik.lavergne.online"
+      - "traefik.frontend.passHostHeader=true"
+
+networks:
+  proxy-network:
+    external:
+      name: proxy-network
+
+volumes:
+  piwik_config:
+    external: true
